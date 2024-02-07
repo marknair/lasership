@@ -1,14 +1,22 @@
-[gd_scene load_steps=8 format=3 uid="uid://b47nj65uqxefm"]
+[gd_scene load_steps=12 format=3 uid="uid://b47nj65uqxefm"]
 
 [ext_resource type="Texture2D" uid="uid://c715dt8pm40so" path="res://spacebackground.png" id="1_pc21f"]
 [ext_resource type="Texture2D" uid="uid://dfhkqe8oy2xml" path="res://kenney_space-shooter-redux/PNG/playerShip2_red.png" id="2_gpdol"]
 [ext_resource type="Script" path="res://Player.gd" id="2_jxdm3"]
 [ext_resource type="PackedScene" uid="uid://cxelnwnayd2wy" path="res://laser.tscn" id="4_brl74"]
-[ext_resource type="Script" path="res://Enemy.gd" id="5_vtbs7"]
-[ext_resource type="Texture2D" uid="uid://cc6eeu5k4djgo" path="res://kenney_space-shooter-redux/PNG/Enemies/enemyGreen3.png" id="6_m6doe"]
+[ext_resource type="PackedScene" uid="uid://d1o6f082xpbco" path="res://enemy.tscn" id="5_5vghg"]
+[ext_resource type="Script" path="res://EnemySpawner.gd" id="6_k5ho0"]
+[ext_resource type="Script" path="res://ScoreLabel.gd" id="7_yeykn"]
+[ext_resource type="Script" path="res://GameOverLabel.gd" id="8_s48xq"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_5oea8"]
-radius = 46.269
+[sub_resource type="CircleShape2D" id="CircleShape2D_oghhg"]
+radius = 27.1804
+
+[sub_resource type="LabelSettings" id="LabelSettings_48srv"]
+font_size = 36
+
+[sub_resource type="LabelSettings" id="LabelSettings_vy58k"]
+font_size = 48
 
 [node name="Main" type="Node2D"]
 
@@ -18,8 +26,8 @@ scale = Vector2(0.289062, 0.665365)
 texture = ExtResource("1_pc21f")
 metadata/_edit_lock_ = true
 
-[node name="Player" type="Node2D" parent="."]
-position = Vector2(277, 894)
+[node name="Player" type="Area2D" parent="."]
+position = Vector2(277, 895)
 scale = Vector2(0.7, 0.7)
 script = ExtResource("2_jxdm3")
 laser_tscn = ExtResource("4_brl74")
@@ -28,16 +36,35 @@ metadata/_edit_group_ = true
 [node name="ShipGraphic" type="Sprite2D" parent="Player"]
 texture = ExtResource("2_gpdol")
 
-[node name="Enemy" type="Area2D" parent="."]
-position = Vector2(261, 59.0001)
-scale = Vector2(0.7, 0.7)
-script = ExtResource("5_vtbs7")
-metadata/_edit_group_ = true
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("CircleShape2D_oghhg")
 
-[node name="EnemyGraphic" type="Sprite2D" parent="Enemy"]
-texture = ExtResource("6_m6doe")
+[node name="EnemySpawner" type="Node2D" parent="."]
+script = ExtResource("6_k5ho0")
+enemy_tscn = ExtResource("5_5vghg")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy"]
-shape = SubResource("CircleShape2D_5oea8")
+[node name="Timer" type="Timer" parent="EnemySpawner"]
+autostart = true
 
-[connection signal="area_entered" from="Enemy" to="Enemy" method="_on_area_entered"]
+[node name="ScoreLabel" type="Label" parent="."]
+offset_left = 19.0
+offset_top = 14.0
+offset_right = 156.0
+offset_bottom = 64.0
+text = "Score: 0"
+label_settings = SubResource("LabelSettings_48srv")
+script = ExtResource("7_yeykn")
+
+[node name="GameOverLabel" type="Label" parent="."]
+visible = false
+offset_left = 8.0
+offset_top = 407.0
+offset_right = 532.0
+offset_bottom = 474.0
+text = "Game Over!"
+label_settings = SubResource("LabelSettings_vy58k")
+horizontal_alignment = 1
+script = ExtResource("8_s48xq")
+
+[connection signal="area_entered" from="Player" to="Player" method="_on_area_entered"]
+[connection signal="timeout" from="EnemySpawner/Timer" to="EnemySpawner" method="spawn_enemy_ship"]

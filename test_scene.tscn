@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://chj7pxpi8oqwp"]
+[gd_scene load_steps=11 format=3 uid="uid://chj7pxpi8oqwp"]
 
 [sub_resource type="Gradient" id="Gradient_3cq4w"]
 offsets = PackedFloat32Array(0, 0.481696, 1)
@@ -29,8 +29,45 @@ color_ramp = SubResource("GradientTexture1D_vyi15")
 turbulence_enabled = true
 turbulence_noise_scale = 2.853
 
+[sub_resource type="Gradient" id="Gradient_8fpac"]
+offsets = PackedFloat32Array(0, 0.870906)
+colors = PackedColorArray(0.857925, 0.93, 0.0651, 1, 1, 0.270588, 0.0117647, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_utuf8"]
+gradient = SubResource("Gradient_8fpac")
+
+[sub_resource type="Curve" id="Curve_bvhv1"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.984402, 0.326996), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_432d7"]
+curve = SubResource("Curve_bvhv1")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_rbc54"]
+particle_flag_disable_z = true
+spread = 180.0
+initial_velocity_min = 40.0
+initial_velocity_max = 40.0
+gravity = Vector3(2.08165e-12, 2.08165e-12, 2.08165e-12)
+linear_accel_min = 13.33
+linear_accel_max = 51.43
+radial_accel_max = 2.08167e-15
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_432d7")
+color_ramp = SubResource("GradientTexture1D_utuf8")
+
 [node name="Node2D" type="Node2D"]
 
 [node name="Fire" type="GPUParticles2D" parent="."]
+visible = false
 amount = 150
 process_material = SubResource("ParticleProcessMaterial_4k5ln")
+
+[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+visible = false
+gravity = Vector2(2.08165e-12, 2.08165e-12)
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_rbc54")
+explosiveness = 0.75

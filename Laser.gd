@@ -5,5 +5,6 @@ extends Node2D
 func _process(delta):
 	position.y -= speed * delta
 
-func _on_area_entered(area):
-	self.queue_free()
+func _on_area_entered(other_area):
+	if other_area.is_in_group("enemy"):
+		self.queue_free()
